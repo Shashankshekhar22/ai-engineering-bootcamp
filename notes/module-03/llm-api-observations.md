@@ -15,3 +15,9 @@ Unlimited input: more input → more tokens → higher cost + greater latency + 
 4. If 10,000 users make requests, what becomes important?
 
 Load Balancing, rate limiting, concurrency, autoscaling, retries, caching, observability, cost control, and provider limits.
+
+5. Why is a TypeScript interface alone not enough to validate data returned by an LLM or external API?
+
+TS interface only works at the compiletime and during runtime it completely disappers which can cause issues 
+
+
