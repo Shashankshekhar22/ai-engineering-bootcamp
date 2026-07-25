@@ -46,3 +46,12 @@ AI Career Copilot
 # Request flow
 
 - Controller -> AI Orchestrator -> OpenAI -> tool call -> Tool Registry -> Tool Executor -> Business Service -> OpenAI -> final response
+
+# Each layer owns one job
+
+    - Controller: HTTP in/out only
+    - Orchestrator: coordinates the LLM loop
+    - Registry: maps tool names to implementations
+    - Executor: validates and runs a tool
+    - Business service: actual domain logic
+    - LLM: chooses the next action, but does not execute anything
