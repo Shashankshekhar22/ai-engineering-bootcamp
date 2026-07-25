@@ -1,6 +1,7 @@
 // Keeps all available tools in one place: registers them, looks them up by name,
 // and produces the OpenAI-facing tool schema list.
-import type { AnyToolDefinition, ToolRegistry } from "./types.js";
+import { ToolNotFoundError } from "../errors.js";
+import type { AnyToolDefinition, ToolRegistry } from "../types.js";
 
 export function createToolRegistry(): ToolRegistry {
   const tools = new Map<string, AnyToolDefinition>();
@@ -15,6 +16,14 @@ export function createToolRegistry(): ToolRegistry {
 
     get(name) {
       return tools.get(name);
+    },
+
+    resolve(name) {
+      const tool = tools.get(name);
+      if (!tool) {
+        throw new ToolNotFoundError(name);
+      }
+      return tool;
     },
 
     getDefinitions() {

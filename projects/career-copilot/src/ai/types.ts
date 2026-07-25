@@ -17,6 +17,9 @@ export type AnyToolDefinition = ToolDefinition<any, any>;
 
 export interface ToolRegistry {
   register(tool: AnyToolDefinition): void;
+  // Safe lookup: returns undefined if the tool isn't registered.
   get(name: string): AnyToolDefinition | undefined;
+  // Strict lookup: throws ToolNotFoundError if the tool isn't registered.
+  resolve(name: string): AnyToolDefinition;
   getDefinitions(): FunctionTool[];
 }

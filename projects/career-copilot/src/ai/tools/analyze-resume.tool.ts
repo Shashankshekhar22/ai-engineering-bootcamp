@@ -1,7 +1,7 @@
 // Tool definition exposing the ResumeService's analyzeResume capability to the model.
 import { z } from "zod";
 import type { ToolDefinition } from "../types.js";
-import { analyzeResume } from "../../services/resume.service.js";
+import { analyzeResume } from "../../resume/resume.service.js";
 
 const analyzeResumeArgsSchema = z.object({
   resumeText: z.string().min(1, "resumeText must not be empty"),
