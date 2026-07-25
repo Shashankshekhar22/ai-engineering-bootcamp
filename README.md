@@ -25,18 +25,24 @@ AI Career Copilot
 # Product Architecture
 
 ┌────────────────────────────┐
-│ React Frontend             │
+│ React Frontend │
 └──────────────┬─────────────┘
-               │
-               ▼
+│
+▼
 ┌────────────────────────────┐
-│ Node.js API (TypeScript)   │
+│ Node.js API (TypeScript) │
 └──────────────┬─────────────┘
-               │
-      ┌────────┴─────────┐
-      ▼                  ▼
-  PostgreSQL          LLM API
-      │                  │
-      └────────┬─────────┘
-               ▼
-        AI Career Copilot
+│
+┌────────┴─────────┐
+▼ ▼
+PostgreSQL LLM API
+│ │
+└────────┬─────────┘
+▼
+AI Career Copilot
+
+# For the tool-loop work, the pattern you should keep in mind is this:
+
+# Request flow
+
+- Controller -> AI Orchestrator -> OpenAI -> tool call -> Tool Registry -> Tool Executor -> Business Service -> OpenAI -> final response
