@@ -136,6 +136,7 @@ export function createAIOrchestrator(
         (item): item is ResponseFunctionToolCall => item.type === "function_call",
       );
 
+      logger.info("TOOL CALS RESPONSE:::", {toolCalls});
       if (toolCalls.length === 0) {
         // Return final response
         return {
