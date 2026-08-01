@@ -6,7 +6,9 @@ import { KNOWN_SKILLS } from "../resume/known-skills.js";
 
 export function calculateATSScore(request: ATSScoreRequest): ATSScoreResult {
   const normalizedJobDescription = request.jobDescription.toLowerCase();
-  const candidateSkills = request.resumeAnalysis.skills;
+  // resumeAnalysis is model-generated tool input, not guaranteed to match the exact
+  // casing analyzeResume produced - normalize before comparing against KNOWN_SKILLS.
+  const candidateSkills = request.resumeAnalysis.skills.map((skill) => skill.toLowerCase());
 
   // Only the skills the job description actually mentions count as "required" -
   // this is what makes the score specific to this job, not a fixed generic checklist.

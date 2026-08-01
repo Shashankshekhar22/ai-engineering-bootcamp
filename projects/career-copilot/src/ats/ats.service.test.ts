@@ -50,6 +50,21 @@ test("scores 0 without dividing by zero when the JD mentions no known keywords",
   assert.deepEqual(result.missingKeywords, []);
 });
 
+test("matches skills regardless of casing, since tool arguments aren't guaranteed to be lowercase", () => {
+  const result = calculateATSScore({
+    resumeAnalysis: {
+      summary: "",
+      skills: ["React", "Node.js", "AWS", "Docker"],
+      experienceLevel: "Senior",
+    },
+    jobDescription: "Looking for a React and Node.js engineer with AWS and Kubernetes experience.",
+  });
+
+  assert.deepEqual(result.matchingKeywords.sort(), ["aws", "node.js", "react"]);
+  assert.deepEqual(result.missingKeywords, ["kubernetes"]);
+  assert.equal(result.atsScore, 75);
+});
+
 test("is job-specific: the same resume scores differently against different job descriptions", () => {
   const resumeAnalysis = {
     summary: "",
