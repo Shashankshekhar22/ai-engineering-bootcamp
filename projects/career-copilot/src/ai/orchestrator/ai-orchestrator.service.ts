@@ -21,6 +21,7 @@ import {
 import { executeTool } from "../executor/tool-executor.js";
 import { createToolRegistry } from "../registry/tool-registry.js";
 import type { ToolRegistry } from "../types.js";
+import { calculateATSScoreTool } from "../tools/calculate-ats-score.tool.js";
 
 const DEFAULT_MODEL = "gpt-4.1-mini";
 const DEFAULT_INSTRUCTIONS =
@@ -33,6 +34,7 @@ const DEFAULT_MAX_ITERATIONS = 5;
 function createDefaultRegistry(): ToolRegistry {
   const registry = createToolRegistry();
   registry.register(analyzeResumeTool);
+  registry.register(calculateATSScoreTool)
   return registry;
 }
 

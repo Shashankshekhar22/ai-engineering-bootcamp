@@ -1,6 +1,7 @@
 // Shared contracts between the Tool Registry, Tool Executor, and individual tool definitions.
 import type { z } from "zod";
 import type { FunctionTool } from "openai/resources/responses/responses.js";
+import { ResumeAnalysis } from "../schema/resume-analysis.schema.js";
 
 export interface ToolDefinition<TArgs = unknown, TResult = unknown> {
   name: string;
@@ -22,4 +23,16 @@ export interface ToolRegistry {
   // Strict lookup: throws ToolNotFoundError if the tool isn't registered.
   resolve(name: string): AnyToolDefinition;
   getDefinitions(): FunctionTool[];
+}
+
+export interface ATSScoreRequest {
+  resumeAnalysis: ResumeAnalysis;
+  jobDescription: string;
+}
+
+export interface ATSScoreResult {
+  atsScore: number;
+  matchingKeywords: string[];
+  missingKeywords: string[];
+  recommendations: string[];
 }

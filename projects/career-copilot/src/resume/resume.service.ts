@@ -1,25 +1,6 @@
 // Domain logic for resume analysis. Knows nothing about OpenAI or tool calling.
 import type { ResumeAnalysis } from "../schema/resume-analysis.schema.js";
-
-const KNOWN_SKILLS = [
-  "javascript",
-  "typescript",
-  "react",
-  "node.js",
-  "express",
-  "python",
-  "java",
-  "sql",
-  "aws",
-  "docker",
-  "kubernetes",
-  "graphql",
-  "rest",
-  "ci/cd",
-  "git",
-  "html",
-  "css",
-];
+import { KNOWN_SKILLS } from "./known-skills.js";
 
 export function analyzeResume(resumeText: string): ResumeAnalysis {
   const normalized = resumeText.toLowerCase();
