@@ -54,5 +54,3 @@
 - Where would you store prompts in the Career Copilot project?
 
 * We can create a seprate prompt repository and access all the prompts from there
-
-Don't think about APIs or syntax. Think like the architect responsible for maintaining 50 prompts over the next two years.
