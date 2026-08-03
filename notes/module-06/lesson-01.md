@@ -1,4 +1,5 @@
-Before writing prompts, answer these questions:
+# Lesson 01 – Foundations of Prompt Engineering.
+
 
 - Why shouldn't prompts be hardcoded throughout the application?
 * Prompts should not be hardcoded because of the following reasons
