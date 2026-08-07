@@ -326,7 +326,7 @@ Using Career Copilot, identify the following:
 
 * The system instruction will always be true regardless fo the user request is 
 
- - You are a Carrer Copilot and your task is to analyse the resume against the Job description and respond to the user query
+ - You are Career Copilot. Never invent candidate experience. Analyze the resume only when appropriate and respond using the required output format.
 
 ---
 
@@ -334,21 +334,21 @@ Using Career Copilot, identify the following:
 
 - What application-specific rules should Career Copilot enforce?
 
-* Always use Resume Analysis tool when it is asked to compare the resume or analyse the resume
+* When the user asks to analyze, compare, or review a resume, use the Resume Analysis tool before responding.
 
 ---
 
 ### Dynamic Context
 
 * Which parts of the prompt change for every request?
-- User input
+- User input, conversation history, and any runtime-injected context such as retrieved documents or current date.
 ---
 
 ### Output Constraints
 
 Which formatting rules should be reusable across multiple features?
 
-- JSON
+- Return structured JSON with the agreed schema, and do not output free-form text when a structured response is required.
 
 ---
 
@@ -366,9 +366,9 @@ User:
 
 What should happen?
 
-Explain **why** based on the instruction hierarchy.
+- Explain **why** based on the instruction hierarchy.
 
-It should not address this instruction because System instriction will take presedence on user inout
+* The model should ignore the user instruction because it conflicts with the higher-priority system instruction. The application should also enforce this rule at the orchestration and validation layers so it does not rely only on the model.
 
 
 ---
@@ -376,32 +376,37 @@ It should not address this instruction because System instriction will take pres
 # Interview Questions
 
 1. Why isn't a prompt just a single string?
-* When everything is jammed into a single string, the AI cannot differentiate between core rules and the immediate task, often leading to poor output consistency. Structured prompts categorize information so the model can distinguish background knowledge from the actual task.
+
+* A prompt is not just a single string because production systems separate roles, context, constraints, examples, and output rules. That separation improves clarity, maintainability, and control over model behavior.
 
 ---
 
 2. What is the difference between System and Developer instructions?
-* Difference between System and Developer instructionsSystem Instructions: Establish the model's persona, overall tone, and hard behavioral boundaries for the entire session.Developer Instructions: A specific framing used in reasoning models (like OpenAI's o-series) designed to clarify that the instructions come directly from the application's developer, avoiding accidental user overrides.
+
+* System instructions define the model’s core behavior and safety boundaries. Developer instructions define application-specific rules for how the model should behave inside a particular product.
 
 ---
 
 3. Why should output constraints be separated from user input?
-* Separating output formatting (e.g., "Must be 50 words," "Return as JSON") from the user's input defends against prompt injection. If constraints are mixed in with user text, a malicious user can easily inject a command to override them. Separating them enforces a hierarchy where high-level system rules outrank arbitrary user requests.
+
+* Output constraints should be separate from user input so they remain stable and harder to override. If formatting rules are mixed into user-provided text, they become easier to confuse or manipulate.
 
 ---
 
 4. Which parts of a prompt are dynamic?
-* Dynamic elements typically include:User Input: The specific task or question that changes with every API call.Contextual Data: Variables injected at runtime (e.g., retrieving previous chat history, RAG documents, or the current user's name).
+
+* Dynamic parts include user input, conversation history, retrieved context, tool outputs, and runtime variables such as date or user profile data.
 
 ---
 
 5. What happens when two instructions conflict?
-* Instead of simply failing, models attempt to compromise by blending the instructions. For example, a directive to be both casual and formal results in awkward outputs that satisfy neither constraint reliably. System instructions generally take precedence, but conflicting instructions will cause unstable and unpredictable behavior.
+
+* When instructions conflict, the higher-priority instruction should win. If the conflict is not resolved clearly, the model may produce inconsistent output, which is why production systems should avoid ambiguous instructions and enforce important rules outside the prompt as well.
 
 ---
 
 6. Why is prompt composition better than hardcoded prompts?
-* Prompt composition dynamically builds instructions by merging smaller, tested components. This improves maintainability, saves developer time, and lets you swap out specific parts (like constraints or external data) without rewriting the entire prompt from scratch.If you want, let me know:What specific model you are building forWhat type of output you are struggling with
+* Prompt composition is better because it lets you reuse shared instruction blocks, keep prompts maintainable, and update one part without rewriting everything. It also makes testing and versioning much easier.
 
 ---
 
