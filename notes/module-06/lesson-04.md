@@ -334,9 +334,9 @@ Answer the following:
 - A task name (e.g. `"resume-analysis"`), the variables to inject (e.g.
   `{ resumeText, jobDescription }`), and optionally a version/experiment selector for
   A/B testing.
+- The final, fully composed prompt string, ready to hand to OpenAI's `instructions`/
 
 - What output should it return?
-- The final, fully composed prompt string, ready to hand to OpenAI's `instructions`/
   `input`.
 
 - What responsibilities should it own?
