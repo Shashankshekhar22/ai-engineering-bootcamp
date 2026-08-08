@@ -418,6 +418,71 @@ deploy, and - if it goes wrong - another deploy to revert.
 
 ---
 
+## Multi-Model Prompt Strategy
+
+Imagine Career Copilot supports three different models: GPT-5.5, Claude, and Gemini.
+The same prompt performs differently on each one.
+
+Option A: maintain one universal prompt for all models.
+Option B: create model-specific prompt variants.
+Option C: use a shared base prompt with small model-specific overrides.
+
+**Which option would I choose, and why?**
+
+Option C. Each model responds differently to the same instruction phrasing,
+JSON-schema strictness, and verbosity cues, so a single universal prompt (A) always
+optimizes for the lowest common denominator, and fixing one model's pain point risks
+regressing another. Fully separate variants (B) fix the quality problem but reproduce
+the exact scaling failure this lesson opened with - multiplied by three, since every
+shared fix (a safety rule change, a task instruction tweak) now has to be manually
+copied into three files that will inevitably drift out of sync. Option C keeps the
+same fragment-composition idea already used for system/safety/task/output: the ~80-90%
+that's identical across models (role, safety rules, task instructions) stays
+single-sourced, and only the genuinely model-specific quirks get isolated into thin
+overrides.
+
+**Trade-offs**
+
+| | Maintenance cost | Per-model quality ceiling | Drift risk |
+|---|---|---|---|
+| A - universal | Lowest (1 file) | Worst - tuned for none specifically | N/A |
+| B - separate variants | Highest - every change ×3 | Best - each fully tunable | High - variants silently diverge |
+| C - base + overrides | Low-moderate | Near-B, for the parts that matter | Moderate - overrides can creep into full rewrites if not reviewed, quietly decaying into B |
+
+**How to organize this in the Prompt Repository**
+
+Add "model" as another axis to fragment lookup, with fallback to the base fragment
+when no override exists for that model:
+
+```text
+src/prompts/
+├── tasks/
+│   ├── resume-analysis.prompt.md          (base - used unless overridden)
+│   └── resume-analysis.gemini.prompt.md   (override - only where Gemini needs different phrasing)
+├── output/
+│   ├── json.prompt.md                     (base)
+│   ├── json.claude.prompt.md              (Claude-specific structured-output phrasing)
+│   └── json.gpt.prompt.md
+```
+
+`PromptRepository.get(name, { model, version })` resolves `name.{model}.prompt.md` if
+it exists, else falls back to `name.prompt.md`. This makes "no override file exists"
+the common case, which self-enforces that overrides stay small - if a model ends up
+needing an override for every single fragment, that's a signal the design has quietly
+drifted into Option B, and worth noticing rather than hiding.
+
+**How to test prompt changes across models**
+
+An eval harness runs the same fixed set of test cases (known resume + JD fixtures with
+expected extractions/scores) through all three models using each model's fully
+composed prompt (base + its overrides), scoring per `(task, model, prompt version)`. A
+change to a *base* fragment should automatically re-run the eval suite for all three
+models, since it implicitly affects everyone; a change to a single model's override
+file only needs that one model's subset re-run. It's the same idea as a CI build
+matrix, just keyed on model instead of OS/runtime version.
+
+---
+
 # Interview Questions
 
 1. Why should prompts be treated as software assets?
