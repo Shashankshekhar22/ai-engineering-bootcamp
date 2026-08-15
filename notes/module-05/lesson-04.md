@@ -18,7 +18,7 @@
         │                   │
         │            Resolve Tool
         ▼                   │
- Tool Call Requested         │
+ Tool Call Requested        │
         │                   ▼
         └────────────► Tool Executor
                             │
